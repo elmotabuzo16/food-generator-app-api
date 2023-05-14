@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import connectDB from './config/connectDB.js';
-import foodRoutes from './routes/foodRoutes.js';
+import recipeRoutes from './routes/recipeRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import { errorHandler, notFound } from './middleware/errorMiddleware.js';
@@ -22,7 +22,7 @@ app.use(cors());
 app.use(morgan('dev')); // will give us endpoints in console
 
 // middleware for routes
-app.use('/api/recipe', foodRoutes);
+app.use('/api/recipe', recipeRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/upload', uploadRoutes);
 

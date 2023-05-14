@@ -11,13 +11,13 @@ const getRecipes = asyncHandler(async (req, res) => {
 });
 
 // @desc    Fetch single recipe
-// @route   GET /api/recipe/:id
+// @route   GET /api/recipe/:slug
 // @access  Public
 const getRecipeById = asyncHandler(async (req, res) => {
-  const recipe = await Food.find({ slug: req.params.slug });
+  const recipe = await Food.findOne({ slug: req.params.slug });
 
-  if (recipe[0]) {
-    res.json(recipe[0]);
+  if (recipe) {
+    res.json(recipe);
   } else {
     res.status(404);
     throw new Error('Food not found');
@@ -63,37 +63,46 @@ const createFood = asyncHandler(async (req, res) => {
   res.status(201).json(createdFood);
 });
 
+// // @desc    Create new review
+// // @route   POST /api/products/:slug/reviews
+// // @access  Public
 const createRecipeReview = asyncHandler(async (req, res) => {
-  const { name, rating, comment } = req.body;
+  const { rating, comment } = req.body;
 
-  const recipe = await Food.find({ slug: req.params.slug });
+  const recipe = await Food.findOne({ slug: req.params.slug });
+
+  if (recipe) {
+    const alreadyReviewed = recipe.reviews.find(
+      (r) => r.user.toString() === req.user._id.toString()
+    );
+
+    if (alreadyReviewed) {
+      res.status(400);
+      throw new Error('Product already reviewed');
+    }
+  }
 
   const review = {
-    name: name,
+    name: req.user.name,
     rating: Number(rating),
     comment: comment,
+    user: req.user._id,
   };
 
   try {
-    recipe[0].reviews.push(review);
+    recipe.reviews.push(review);
 
-    recipe[0].numReviews = recipe[0].reviews.length;
-    recipe[0].rating = recipe[0].reviews.reduce(
-      (acc, item) => item.rating + acc,
-      0 / recipe[0].reviews.length
-    );
+    recipe.numReviews = recipe.reviews.length;
 
-    console.log(recipe[0]);
+    recipe.rating =
+      recipe.reviews.reduce((acc, item) => item.rating + acc, 0) /
+      recipe.reviews.length;
 
-    await recipe[0].save();
+    await recipe.save();
     res.status(201).json({ message: 'Review added' });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
 });
-
-// // @desc    Create new review
-// // @route   POST /api/products/:id/reviews
-// // @access  Public
 
 export { getRecipes, createFood, getRecipeById, createRecipeReview };

@@ -2,7 +2,7 @@ const DUMMY_FOOD = [
   {
     category: 'Keto',
     type: 'Meal',
-    name: 'Groud Beef and Broccoli',
+    name: 'Ground Beef and Broccoli',
     calories: '638',
     carbs: '8g',
     protein: '47g',
