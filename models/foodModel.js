@@ -74,11 +74,7 @@ const foodSchema = mongoose.Schema(
     },
     main_image: {
       type: String,
-      required: true,
-    },
-    photo: {
-      data: Buffer,
-      contentType: String,
+      required: false,
     },
     slug: {
       type: String,
@@ -107,7 +103,6 @@ const foodSchema = mongoose.Schema(
       required: true,
       default: 0,
     },
-
     approved: {
       type: Boolean,
       required: true,
@@ -117,10 +112,10 @@ const foodSchema = mongoose.Schema(
     servings: [servingSchema],
     directions: [directionSchema],
     reviews: [reviewSchema],
-    categories: [
+    tags: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Category',
+        ref: 'Tag',
         required: false,
       },
     ],

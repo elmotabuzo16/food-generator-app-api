@@ -18,26 +18,26 @@ connectDB();
 const importData = async () => {
   try {
     await User.deleteMany();
-    await Food.deleteMany();
-    await Blog.deleteMany();
+    // await Food.deleteMany();
+    // await Blog.deleteMany();
 
     // insert users from User DB
     const createdUsers = await User.insertMany(DUMMY_USERS);
     console.log('User Imported!'.green.inverse);
 
     // get the admin user ID
-    const adminUser = createdUsers[0]._id;
-    console.log(`Admin user - ${adminUser}`);
+    // const adminUser = createdUsers[0]._id;
+    // console.log(`Admin user - ${adminUser}`);
 
-    const sampleFoods = DUMMY_FOOD.map((food) => {
-      return { ...food, user: adminUser };
-    });
+    // const sampleFoods = DUMMY_FOOD.map((food) => {
+    //   return { ...food, user: adminUser };
+    // });
 
-    await Food.insertMany(sampleFoods);
-    console.log('Food Imported!'.green.inverse);
+    // await Food.insertMany(sampleFoods);
+    // console.log('Food Imported!'.green.inverse);
 
-    await Blog.insertMany(DUMMY_BLOG);
-    console.log('Blog Imported!'.green.inverse);
+    // await Blog.insertMany(DUMMY_BLOG);
+    // console.log('Blog Imported!'.green.inverse);
 
     process.exit();
 

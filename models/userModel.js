@@ -7,6 +7,10 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    username: {
+      type: String,
+      required: true,
+    },
     email: {
       type: String,
       required: true,
@@ -24,6 +28,18 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       required: true,
       default: false,
+    },
+    photo: {
+      data: Buffer,
+      contentType: String,
+    },
+    about: {
+      type: String,
+    },
+    favories: [],
+    resetPasswordLink: {
+      type: String,
+      default: '',
     },
   },
   {
