@@ -36,7 +36,12 @@ const userSchema = mongoose.Schema(
     about: {
       type: String,
     },
-    favories: [],
+    favorites: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Foods',
+      },
+    ],
     resetPasswordLink: {
       type: String,
       default: '',

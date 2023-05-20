@@ -112,6 +112,13 @@ const foodSchema = mongoose.Schema(
     servings: [servingSchema],
     directions: [directionSchema],
     reviews: [reviewSchema],
+    userIdFavorite: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User',
+      },
+    ],
     tags: [
       {
         type: mongoose.Schema.Types.ObjectId,

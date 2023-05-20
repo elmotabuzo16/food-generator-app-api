@@ -147,8 +147,8 @@ export const forgotPassword = asyncHandler(async (req, res) => {
     secure: false,
     requireTLS: true,
     auth: {
-      user: 'ketofoodgenerator@gmail.com', // MAKE SURE THIS EMAIL IS YOUR GMAIL FOR WHICH YOU GENERATED APP PASSWORD
-      pass: 'jcyaocdchulixvji', // MAKE SURE THIS PASSWORD IS YOUR GMAIL APP PASSWORD WHICH YOU GENERATED EARLIER
+      user: process.env.EMAIL_FROM, // MAKE SURE THIS EMAIL IS YOUR GMAIL FOR WHICH YOU GENERATED APP PASSWORD
+      pass: process.env.EMAIL_PW, // MAKE SURE THIS PASSWORD IS YOUR GMAIL APP PASSWORD WHICH YOU GENERATED EARLIER
     },
     tls: {
       ciphers: 'SSLv3',
@@ -162,7 +162,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
       .sendMail(emailData)
       .then((info) => {
         return res.json({
-          message: `Email has been sent to ${email}. Follow the instructions to reset your password. Link expires in 10min.`,
+          message: `Email has been sent to ${email}. Follow the instructions to reset your password. Link expires in 1 day.`,
         });
       })
       .catch((err) => console.log(`Problem sending email: ${err}`));

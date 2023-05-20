@@ -2,6 +2,7 @@ import asyncHandler from 'express-async-handler';
 import Food from '../models/foodModel.js';
 import User from '../models/userModel.js';
 import slugify from 'slugify';
+import Favorite from '../models/favoriteModel.js';
 
 // @desc    Fetch all recipe
 // @route   GET /api/recipes
@@ -166,4 +167,74 @@ export const listByUser = asyncHandler(async (req, res) => {
 
     res.status(201).json(food);
   }
+});
+
+export const addToFavorites = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const { foodId } = req.body;
+
+  // check if user already favorited the food
+  const user = await User.findById(_id);
+  const userAlreadyAdded = user.favorites.find(
+    (id) => id.toString() === foodId
+  );
+
+  if (userAlreadyAdded) {
+    let user = await User.findByIdAndUpdate(
+      _id,
+      {
+        $pull: { favorites: foodId },
+      },
+      {
+        new: true,
+      }
+    );
+
+    let recipe = await Food.findByIdAndUpdate(
+      foodId,
+      {
+        $pull: { userIdFavorite: _id },
+      },
+      {
+        new: true,
+      }
+    );
+
+    res.json({
+      user: user,
+      recipe: recipe,
+    });
+  } else {
+    let user = await User.findByIdAndUpdate(
+      _id,
+      {
+        $push: { favorites: foodId },
+      },
+      {
+        new: true,
+      }
+    );
+
+    let recipe = await Food.findByIdAndUpdate(
+      foodId,
+      {
+        $push: { userIdFavorite: _id },
+      },
+      {
+        new: true,
+      }
+    );
+
+    res.json({
+      user: user,
+      recipe: recipe,
+    });
+  }
+});
+
+export const listFavoritesByUser = asyncHandler(async (req, res) => {
+  const { id } = req.user;
+
+  const recipe = await Food.find({ userIdFavorite: id });
+  res.json(recipe);
 });
