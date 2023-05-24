@@ -5,10 +5,12 @@ import recipeRoutes from './routes/recipeRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import tagRoutes from './routes/tagRoutes.js';
 import formRoutes from './routes/formRoutes.js';
+import uploadRoutes from './routes/uploadRoutes.js';
 import { errorHandler, notFound } from './middleware/errorMiddleware.js';
 import path from 'path';
 import cors from 'cors';
 import morgan from 'morgan';
+import { generateUploadURL } from './s3.js';
 
 dotenv.config();
 
@@ -27,6 +29,7 @@ app.use('/api/recipe', recipeRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/tag', tagRoutes);
 app.use('/api/form', formRoutes);
+app.use('/api/upload', uploadRoutes);
 
 const __dirname = path.resolve();
 console.log(__dirname);

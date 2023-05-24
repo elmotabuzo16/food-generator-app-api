@@ -9,11 +9,15 @@ import {
   listByUser,
   addToFavorites,
   listFavoritesByUser,
+  listRelatedCategory,
+  getFeatured,
 } from '../controllers/recipeController.js';
 import { admin, protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
+router.post('/getFeatured', getFeatured);
+router.route('/relatedCategory').post(listRelatedCategory);
 router.route('/').get(getApprovedRecipes).post(protect, createFood);
 router.get('/userfavorites', protect, listFavoritesByUser);
 router.route('/admin/:slug/approved').put(protect, admin, approvedRecipe);

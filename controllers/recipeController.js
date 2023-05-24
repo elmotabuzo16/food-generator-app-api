@@ -238,3 +238,30 @@ export const listFavoritesByUser = asyncHandler(async (req, res) => {
   const recipe = await Food.find({ userIdFavorite: id });
   res.json(recipe);
 });
+
+export const listRelatedCategory = asyncHandler(async (req, res) => {
+  let limit = req.body.limit ? parseInt(req.body.limit) : 3;
+
+  const { _id, type } = req.body;
+
+  const recipe = await Food.find({
+    _id: { $ne: _id },
+    type: type,
+    approved: true,
+  }).limit(limit);
+
+  res.json(recipe);
+  console.log(recipe);
+});
+
+export const getFeatured = asyncHandler(async (req, res) => {
+  const limit = 4;
+  const { type } = req.body;
+  // const recipes = await Food.find({ type, approved: true });
+  const recipes = await Food.aggregate([
+    { $match: { approved: true, type: type } },
+    { $sample: { size: 4 } },
+  ]);
+
+  res.json(recipes);
+});
