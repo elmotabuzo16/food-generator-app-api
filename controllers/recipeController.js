@@ -250,14 +250,17 @@ export const listRelatedCategory = asyncHandler(async (req, res) => {
     approved: true,
   }).limit(limit);
 
-  res.json(recipe);
-  console.log(recipe);
+  const recipes = await Food.aggregate([
+    { $match: { _id: { $ne: _id }, approved: true, type: type } },
+    { $sample: { size: 3 } },
+  ]);
+
+  res.json(recipes);
 });
 
 export const getFeatured = asyncHandler(async (req, res) => {
   const limit = 4;
   const { type } = req.body;
-  // const recipes = await Food.find({ type, approved: true });
   const recipes = await Food.aggregate([
     { $match: { approved: true, type: type } },
     { $sample: { size: 4 } },
