@@ -259,11 +259,10 @@ export const listRelatedCategory = asyncHandler(async (req, res) => {
 });
 
 export const getFeatured = asyncHandler(async (req, res) => {
-  const limit = 4;
   const { type } = req.body;
   const recipes = await Food.aggregate([
     { $match: { approved: true, type: type } },
-    { $sample: { size: 4 } },
+    { $sample: { size: 3 } },
   ]);
 
   res.json(recipes);
