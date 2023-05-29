@@ -8,13 +8,19 @@ import Favorite from '../models/favoriteModel.js';
 // @route   GET /api/recipes
 // @access  Public
 export const getApprovedRecipes = asyncHandler(async (req, res) => {
-  const recipes = await Food.find({ approved: true });
+  const recipes = await Food.find({ approved: true }).populate(
+    'tags',
+    '_id name slug'
+  );
 
   res.json(recipes);
 });
 
 export const getNonApprovedRecipes = asyncHandler(async (req, res) => {
-  const recipes = await Food.find({ approved: false });
+  const recipes = await Food.find({ approved: false }).populate(
+    'tags',
+    '_id name slug'
+  );
   res.json(recipes);
 });
 
@@ -22,6 +28,20 @@ export const getNonApprovedRecipes = asyncHandler(async (req, res) => {
 // @route   GET /api/recipe/:slug
 // @access  Public
 export const getRecipeById = asyncHandler(async (req, res) => {
+  const recipe = await Food.findOne({ slug: req.params.slug }).populate(
+    'tags',
+    '_id name slug'
+  );
+
+  if (recipe) {
+    res.json(recipe);
+  } else {
+    res.status(404);
+    throw new Error('Food not found');
+  }
+});
+
+export const getRecipeByIdTags = asyncHandler(async (req, res) => {
   const recipe = await Food.findOne({ slug: req.params.slug });
 
   if (recipe) {
@@ -51,6 +71,7 @@ export const createFood = asyncHandler(async (req, res) => {
     ingredients,
     servings,
     directions,
+    tags,
   } = req.body;
 
   const foodExists = await Food.findOne({ name });
@@ -84,6 +105,7 @@ export const createFood = asyncHandler(async (req, res) => {
     ingredients: ingredients,
     servings: servings,
     directions: directions,
+    tags: tags,
   });
 
   console.log(food);
@@ -93,6 +115,89 @@ export const createFood = asyncHandler(async (req, res) => {
     res.status(201).json(createdFood);
   } catch (error) {
     res.json({ error: error.message });
+  }
+});
+
+export const updateFood = asyncHandler(async (req, res) => {
+  const slug = req.params.slug.toLowerCase();
+
+  const {
+    category,
+    type,
+    main_image,
+    calories,
+    carbs,
+    protein,
+    fat,
+    totalTime,
+    servingCount,
+    description,
+    ingredients,
+    servings,
+    directions,
+    tags,
+  } = req.body;
+
+  // Find the recipe by ID and update its fields
+  const recipe = await Food.findOneAndUpdate(
+    { slug: slug },
+    {
+      category,
+      type,
+      main_image,
+      calories,
+      carbs,
+      protein,
+      fat,
+      totalTime,
+      servingCount,
+      description,
+      ingredients,
+      servings,
+      directions,
+      tags,
+    },
+    { new: true, runValidators: true }
+  );
+
+  if (!recipe) {
+    res.status(404);
+    throw new Error('Recipe not found');
+  }
+
+  res.status(200).json({
+    recipe,
+  });
+});
+
+// @desc    Create a recipe
+// @route   POST /api/recipe
+// @access  Protect
+
+export const updateUserProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    user.username = req.body.username || user.username;
+    user.name = req.body.name || user.name;
+    user.email = req.body.email || user.email;
+    if (req.body.password) {
+      user.password = req.body.password;
+    }
+
+    const updatedUser = await user.save();
+
+    res.json({
+      username: updatedUser.username,
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+      token: generateToken(updatedUser._id),
+    });
+  } else {
+    res.status(404);
+    throw new Error('User not found');
   }
 });
 

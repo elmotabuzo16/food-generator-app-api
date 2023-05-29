@@ -6,11 +6,13 @@ import {
   updateUserProfile,
   forgotPassword,
   resetPassword,
+  googleLogin,
 } from '../controllers/userController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
+router.post('/google-login', googleLogin);
 router.route('/register').post(registerUser);
 router.post('/login', authUser);
 router

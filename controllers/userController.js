@@ -4,6 +4,7 @@ import generateToken from '../utils/generateToken.js';
 import nodeMailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 import _ from 'lodash';
+import { OAuth2Client } from 'google-auth-library';
 
 export const authUser = asyncHandler(async (req, res) => {
   const { emailOrUsername, password } = req.body;
@@ -204,4 +205,32 @@ export const resetPassword = asyncHandler(async (req, res) => {
       }
     );
   }
+});
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+export const googleLogin = asyncHandler(async (req, res) => {
+  const idToken = req.body.tokenId;
+  client
+    .verifyIdToken({ idToken, audience: process.env.GOOGLE_CLIENT_ID })
+    .then((response) => {
+      const { email_verified, name, email, jti } = response.payload;
+
+      if (email_verified) {
+        const user = User.find({ email });
+
+        if (user) {
+          const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+            expiresIn: '1d',
+          });
+
+          const { _id, email, name, username } = user;
+
+          return res.json({
+            token,
+            user: { _id, email, name, username },
+          });
+        } else {
+        }
+      }
+    });
 });
