@@ -13,6 +13,10 @@ const tagSchema = new mongoose.Schema(
       unique: true,
       index: true,
     },
+    description: {
+      type: String,
+      required: false,
+    },
   },
   { timestamp: true }
 );
