@@ -3,6 +3,7 @@ import Food from '../models/foodModel.js';
 import User from '../models/userModel.js';
 import slugify from 'slugify';
 import Favorite from '../models/favoriteModel.js';
+import Tag from '../models/tagModel.js';
 
 // @desc    Fetch all recipe
 // @route   GET /api/recipes
@@ -371,4 +372,52 @@ export const getFeatured = asyncHandler(async (req, res) => {
   ]);
 
   res.json(recipes);
+});
+
+export const getFoodTags = asyncHandler(async (req, res) => {
+  const recipes = await Food.find({ approved: true })
+    .select('tags')
+    .populate('tags', 'name slug');
+
+  const tagNames = recipes.reduce((names, recipe) => {
+    recipe.tags.forEach((tag) => {
+      if (!names.includes(tag.name)) {
+        names.push(tag.name);
+      }
+    });
+    return names;
+  }, []);
+
+  res.json(tagNames.sort());
+});
+
+export const generateRecipe = asyncHandler(async (req, res) => {
+  const recipes = await Food.find({ approved: true }).populate(
+    'tags',
+    '_id name slug'
+  );
+
+  res.json(recipes);
+});
+
+export const filterRecipes = asyncHandler(async (req, res) => {
+  const { type, tag } = req.query;
+
+  let query = {};
+
+  if (type) {
+    query.type = type;
+  }
+
+  if (tag) {
+    const selectedTag = await Tag.findOne({ name: tag });
+
+    if (selectedTag) {
+      query.tags = selectedTag._id;
+    }
+  }
+
+  const filteredRecipes = await Food.find(query);
+
+  res.json(filteredRecipes);
 });

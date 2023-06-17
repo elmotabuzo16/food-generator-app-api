@@ -13,12 +13,16 @@ import {
   getFeatured,
   updateFood,
   getRecipeByIdTags,
+  getFoodTags,
+  filterRecipes,
 } from '../controllers/recipeController.js';
 import { admin, protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
 router.route('/favorite').put(protect, addToFavorites);
+router.route('/foodTags').get(getFoodTags);
+router.route('/filter').get(filterRecipes);
 router.post('/getFeatured', getFeatured);
 router.route('/relatedCategory').post(listRelatedCategory);
 router.route('/').get(getApprovedRecipes).post(protect, createFood);
