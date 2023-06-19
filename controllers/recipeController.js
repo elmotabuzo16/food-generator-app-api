@@ -35,6 +35,10 @@ export const getRecipeById = asyncHandler(async (req, res) => {
   );
 
   if (recipe) {
+    recipe.viewCount = recipe.viewCount + 1;
+    console.log(recipe.viewCount);
+    const addedViewCount = await recipe.save();
+    console.log('executed');
     res.json(recipe);
   } else {
     res.status(404);

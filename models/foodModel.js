@@ -108,6 +108,10 @@ const foodSchema = mongoose.Schema(
       required: true,
       default: false,
     },
+    viewCount: {
+      type: Number,
+      default: 0,
+    },
     ingredients: [ingredientSchema],
     servings: [servingSchema],
     directions: [directionSchema],
