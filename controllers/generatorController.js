@@ -1,7 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import Generator from '../models/generatorModel.js';
 
-// POST
+// GET
 export const incrementGeneratorClicks = asyncHandler(async (req, res) => {
   const generator = await Generator.findOne({ name: 'Generator' });
 
@@ -10,6 +10,20 @@ export const incrementGeneratorClicks = asyncHandler(async (req, res) => {
   }
 
   generator.generatorClicks = generator.generatorClicks + 1;
+  await generator.save();
+
+  res.json(generator);
+});
+
+// GET
+export const incrementHomePageViews = asyncHandler(async (req, res) => {
+  const generator = await Generator.findOne({ name: 'Generator' });
+
+  if (!generator) {
+    return res.status(404).json({ message: 'Generator not found' });
+  }
+
+  generator.homePageViews = generator.homePageViews + 1;
   await generator.save();
 
   res.json(generator);

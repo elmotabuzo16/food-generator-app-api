@@ -12,6 +12,10 @@ const generatorSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    homePageViews: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamp: true }
 );
