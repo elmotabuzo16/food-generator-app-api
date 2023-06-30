@@ -1,68 +1,56 @@
 import mongoose from 'mongoose';
 
-const bodyDescriptionSchema = mongoose.Schema({
-  description: { type: String, required: false },
-});
-
-const commentSchema = mongoose.Schema({
-  name: { type: String, required: false },
-  email: { type: String, required: false },
-  content: { type: String, required: false },
-  time: { type: Date, default: Date.now },
-});
-
-const bodySchema = mongoose.Schema({
-  header: { type: String, required: false },
-  bodyContent: { type: String, required: false },
-  bodyDescription: [bodyDescriptionSchema],
-  image: { type: String, required: false },
-});
-
-const tagSchema = mongoose.Schema({
-  name: { type: String, required: false },
-});
+const { ObjectId } = mongoose.Schema;
 
 const blogSchema = mongoose.Schema(
   {
-    // user: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   required: true,
-    //   ref: 'User',
-    // },
     title: {
       type: String,
+      trim: true,
+      min: 3,
+      max: 160,
       required: true,
-    },
-    author: {
-      type: String,
-      required: false,
     },
     slug: {
-      type: String,
-      required: true,
+      type: {},
       unique: true,
+      index: true,
     },
-    content: {
+    body: {
       type: String,
       required: true,
-    },
-    date_posted: {
-      type: String,
-      required: true,
+      min: 200,
+      max: 20000000,
     },
     excerpt: {
       type: String,
-      required: true,
+      max: 1000,
     },
-    body: [bodySchema],
-    tags: [tagSchema],
-    comments: [commentSchema],
+    mtitle: {
+      type: String,
+    },
+    mdesc: {
+      type: {},
+    },
+    photo: {
+      type: String,
+      required: false,
+    },
+    categories: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
+        required: false,
+      },
+    ],
+    postedBy: {
+      type: ObjectId,
+      ref: 'User',
+    },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-const Blog = mongoose.model('Blogs', blogSchema);
+const Blog = mongoose.model('Blog', blogSchema);
 
 export default Blog;

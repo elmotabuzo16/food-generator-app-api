@@ -8,6 +8,8 @@ import formRoutes from './routes/formRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import ingredientRoutes from './routes/ingredientRoutes.js';
 import generatorRoutes from './routes/generatorRoutes.js';
+import blogRoutes from './routes/blogRoutes.js';
+import categoryRoutes from './routes/categoryRoutes.js';
 import { errorHandler, notFound } from './middleware/errorMiddleware.js';
 import path from 'path';
 import cors from 'cors';
@@ -33,6 +35,8 @@ app.use('/api/form', formRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/ingredient', ingredientRoutes);
 app.use('/api/generator', generatorRoutes);
+app.use('/api/blog', blogRoutes);
+app.use('/api/category', categoryRoutes);
 
 const __dirname = path.resolve();
 console.log(__dirname);
